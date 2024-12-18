@@ -43,9 +43,9 @@ const host =
 
 const port =
   process.env.VITE_BASE_URL_PROD && process.env.VITE_BASE_URL_PROD.trim() !== ""
-    ? 80 // Default HTTP port for live environments
-    : 3000; // Default port for local development
+    ? "" // No need to specify port 80 for live environments
+    : ":3000"; // Include the colon for local development
 
-ViteExpress.listen(app, port, () =>
-  console.log(`Server is listening on ${host}:${port}...`)
+ViteExpress.listen(app, port ? parseInt(port.slice(1)) : 80, () =>
+  console.log(`Server is listening on ${host}${port}`)
 );
