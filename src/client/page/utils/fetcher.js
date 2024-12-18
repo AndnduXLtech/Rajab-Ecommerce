@@ -6,7 +6,7 @@ const prodURL = import.meta.env?.VITE_BASE_URL_PROD;
 const url = import.meta.env?.DEV ? devURL : prodURL;
 
 console.log(url);
-const baseURL = `${url}/api`;
+const baseURL = `${prodURL}/api`;
 
 export const api = ofetch.create({
   baseURL,
