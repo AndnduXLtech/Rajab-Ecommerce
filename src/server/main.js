@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 dbConnection();
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: process.env.VITE_BASE_URL_PROD || "http://localhost:5173", // Use process.env to access environment variables
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
@@ -32,6 +32,20 @@ app.get("/hoi", (req, res) => {
 });
 
 app.use("/api", v1Route);
-ViteExpress.listen(app, 3000, () =>
-  console.log("Server is listening on port 3000...")
+// ViteExpress.listen(app, 3000, () =>
+//   console.log("Server is listening on port 3000...")
+// );
+
+const host =
+  process.env.VITE_BASE_URL_PROD && process.env.VITE_BASE_URL_PROD.trim() !== ""
+    ? process.env.VITE_BASE_URL_PROD
+    : "http://localhost";
+
+const port =
+  process.env.VITE_BASE_URL_PROD && process.env.VITE_BASE_URL_PROD.trim() !== ""
+    ? 80 // Default HTTP port for live environments
+    : 3000; // Default port for local development
+
+ViteExpress.listen(app, port, () =>
+  console.log(`Server is listening on ${host}:${port}...`)
 );
