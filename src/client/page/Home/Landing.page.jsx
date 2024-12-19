@@ -1,7 +1,8 @@
 import React from "react";
 import TrendingProducts from "./Trending/TrendingProducts";
-import { BrandCarousel } from "./brandCarosuel/Brands.page";
+
 import Rajablagacy from "./About_Rajab/Rajab.lagacy";
+import BrandCarousel from "./brandCarosuel/Brands.page";
 
 function LandingPage() {
   return (
@@ -9,7 +10,7 @@ function LandingPage() {
       <div className="flex-row justify-center mx-4">
         <TrendingProducts />
         <BrandCarousel />
-        <Rajablagacy /> 
+        <Rajablagacy />
       </div>
 
       {/*added rajab company legacy, refering web site https://primetechtrading.com/ also have the company legacy in home page*/}

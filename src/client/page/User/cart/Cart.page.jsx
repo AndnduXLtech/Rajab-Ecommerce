@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cartlisting } from "@/store/slice/cartslice/cart.fetcher";
 import { useApi } from "@/page/utils/fetcher";
+import { toast } from "sonner";
 
 const CartPage = () => {
   const { data, loading } = cartlisting();
@@ -34,6 +35,24 @@ const CartPage = () => {
     },
   });
 
+  const removeCartMutation = useMutation({
+    mutationFn: async ({ productId, variantId }) => {
+      const response = await ofetch(
+        `/useractivities/removecart/${productId}/${variantId}`,
+        { method: "DELETE" }
+      );
+      return response;
+    },
+    onSuccess: () => {
+      toast.success("Item removed from cart");
+      queryClient.invalidateQueries(["cartlisting"]);
+    },
+    onError: (error) => {
+      console.error("Error removing item from cart:", error);
+      toast.error("Failed to remove item from cart");
+    },
+  });
+
   const handleQuantityChange = (productId, variantId, delta) => {
     console.log(productId, variantId, delta);
     const cartItems = data?.cart?.products || [];
@@ -58,7 +77,7 @@ const CartPage = () => {
   const cartItems = data?.cart?.products || [];
 
   const handleRemoveItem = (productId, variantId) => {
-    // Implement remove item logic if needed
+    removeCartMutation.mutate({ productId, variantId });
   };
 
   const subtotal = cartItems.reduce(

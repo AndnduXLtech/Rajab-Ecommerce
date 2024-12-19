@@ -18,6 +18,7 @@ function Login() {
     onSuccess: (r) => {
       setToken(r?.token);
       setRole(r?.role);
+      navigate("/profile");
       toast.success("login successful!");
     },
     onError: (e) => {

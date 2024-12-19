@@ -9,7 +9,7 @@ userActivitiesRouter
   .post(authUser, userActivitiesController.addToCart);
 
 userActivitiesRouter
-  .route("/removecart/:id")
+  .route("/removecart/:productId/:variantId")
   .delete(authUser, userActivitiesController.removeFromCart);
 userActivitiesRouter
   .route("/updatecart/:productId/:variantId")
@@ -22,8 +22,8 @@ userActivitiesRouter
   .route("/getwishlist")
   .get(authUser, userActivitiesController.getUserWishlist);
 userActivitiesRouter
-  .route("/addwishlist")
-  .post(authUser, userActivitiesController.addToWishlist); // now same product can be added multiple times
+  .route("/togglewishlist")
+  .post(authUser, userActivitiesController.toggleWishlist); // now same product can be added multiple times
 // userActivitiesRouter
 //   .route("/wishlist/:id")
 //   .delete(userActivitiesController.removeProductFromWishlist);

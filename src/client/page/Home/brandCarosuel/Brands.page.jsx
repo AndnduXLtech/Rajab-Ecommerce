@@ -13,25 +13,25 @@ import { Badge } from "@/components/ui/badge";
 const brands = [
   {
     name: "Acme Corp",
-    logo: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200&h=100&fit=crop&auto=format",
+    logo: "https://res.cloudinary.com/djmrroluc/image/upload/v1734607345/l4jwvivjfvnstz2kfq1n.png",
     color: "bg-blue-50 hover:bg-blue-100",
     badge: "Featured",
   },
   {
     name: "Global Tech",
-    logo: "https://images.unsplash.com/photo-1599305446868-59e861c19d68?w=200&h=100&fit=crop&auto=format",
+    logo: "https://res.cloudinary.com/djmrroluc/image/upload/v1734607345/rgqu8ckflrp2kuj9dwjn.png",
     color: "bg-purple-50 hover:bg-purple-100",
     badge: "Partner",
   },
   {
     name: "Eco Solutions",
-    logo: "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?w=200&h=100&fit=crop&auto=format",
+    logo: "https://res.cloudinary.com/djmrroluc/image/upload/v1734607345/xknxksszeie0buh8axvs.png",
     color: "bg-green-50 hover:bg-green-100",
     badge: "Verified",
   },
   {
     name: "Future Industries",
-    logo: "https://images.unsplash.com/photo-1599305446868-59e861c19d68?w=200&h=100&fit=crop&auto=format",
+    logo: "https://res.cloudinary.com/djmrroluc/image/upload/v1734607345/ypbmbioem1xsj2lqxxoa.png",
     color: "bg-orange-50 hover:bg-orange-100",
     badge: "Enterprise",
   },
@@ -43,22 +43,27 @@ const brands = [
   },
 ];
 
-export function BrandCarousel() {
+export default function BrandCarousel() {
   const [api, setApi] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [current, setCurrent] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     if (!api) return;
 
     const interval = setInterval(() => {
-      api.scrollNext();
+      if (!isAnimating) {
+        setIsAnimating(true);
+        api.scrollNext();
+        setTimeout(() => setIsAnimating(false), 500); // Match transition duration
+      }
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [api]);
+  }, [api, isAnimating]);
 
   return (
-    <div className="w-full py-12 bg-gradient-to-b from-white to-gray-50 flex justify-center items-center">
+    <div className="w-full py-12 bg-gradient-to-b from-white to-gray-50">
       <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
         <div className="text-center mb-12 space-y-4">
           <h2 className="text-3xl font-bold text-gray-900 tracking-tighter">
@@ -72,17 +77,19 @@ export function BrandCarousel() {
           <Carousel
             setApi={setApi}
             opts={{
-              align: "center", // Changed from "start" to "center"
+              align: "center",
               loop: true,
+              skipSnaps: false,
+              dragFree: false,
             }}
             className="w-full max-w-7xl mx-auto"
-            onSelect={(index) => setCurrentIndex(index)}
+            onSelect={(index) => setCurrent(index)}
           >
-            <CarouselContent className="flex justify-center -ml-2 md:-ml-4">
-              {[...brands, ...brands].map((brand, index) => (
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {brands.map((brand, index) => (
                 <CarouselItem
                   key={index}
-                  className="pl-2 md:pl-4 basis-full md:basis-1/3 lg:basis-1/5 transition-opacity duration-300"
+                  className="pl-2 md:pl-4 basis-full md:basis-1/3 lg:basis-1/4"
                 >
                   <Card
                     className={cn(
@@ -107,7 +114,7 @@ export function BrandCarousel() {
                           className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"
                         />
                       </div>
-                      <div className="mt-4 space-y-2">
+                      <div className="mt-4">
                         <h3 className="text-sm font-semibold text-center text-gray-900 group-hover:text-gray-700">
                           {brand.name}
                         </h3>

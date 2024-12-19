@@ -4,6 +4,9 @@ import bcrypt from "bcrypt";
 import Address from "../Models/address.model.js";
 import OrderHistory from "../Models/orderhisotry.model.js";
 
+import Cart from "../Models/Cart.model.js";
+import Wishlist from "../Models/wishlist.model.js";
+
 export class userController {
   static getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find();
@@ -24,8 +27,16 @@ export class userController {
       });
     }
 
+    const wishlist = await Wishlist.findOne({ user: req.user._id });
+    const cart = await Cart.findOne({ user: req.user._id });
+
+    const wishlistLength = wishlist ? wishlist.products.length : 0;
+    const cartLength = cart ? cart.products.length : 0;
+
     res.status(200).json({
       user,
+      wishlistLength,
+      cartLength,
       success: true,
       message: "Successfully retrieved user data",
     });

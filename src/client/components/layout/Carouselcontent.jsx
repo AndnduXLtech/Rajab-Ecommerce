@@ -11,18 +11,21 @@ import {
 
 const slides = [
   {
-    title: "RAK VALET BATH TUB",
-    image: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg",
+    title: "RAK BASIN AND SINK",
+    image:
+      "https://res.cloudinary.com/djmrroluc/image/upload/v1734607134/wxy885smbmcnlxt4whtj.jpg",
     cta: "Shop Now",
   },
   {
     title: "LUXURY SOAKING TUB",
-    image: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg",
+    image:
+      "https://res.cloudinary.com/djmrroluc/image/upload/v1734607134/eyqf3ov5gz3rdsbmktj8.jpg",
     cta: "Learn More",
   },
   {
     title: "MODERN FREESTANDING BATH",
-    image: "https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg",
+    image:
+      "https://res.cloudinary.com/djmrroluc/image/upload/v1734607135/tfe3cuikz3njhakhfede.jpg",
     cta: "View Details",
   },
 ];

@@ -4,14 +4,14 @@ function TopBarScrolling() {
   const textRef = useRef(null);
 
   useEffect(() => {
-    if (!textRef.current) return; // Guard clause for null ref
+    if (!textRef.current) return;
 
     const textWidth = textRef.current.scrollWidth;
     const containerWidth = textRef.current.offsetWidth;
     const scrollAmount = textWidth;
 
     const animateScroll = () => {
-      if (!textRef.current) return; // Guard clause
+      if (!textRef.current) return;
       textRef.current.style.transition = `transform ${
         scrollAmount / 80
       }s linear`;
@@ -19,7 +19,7 @@ function TopBarScrolling() {
     };
 
     const resetScroll = () => {
-      if (!textRef.current) return; // Guard clause
+      if (!textRef.current) return;
       textRef.current.style.transition = "none";
       textRef.current.style.transform = "translateX(100%)";
       setTimeout(animateScroll, 50);
@@ -29,18 +29,17 @@ function TopBarScrolling() {
       resetScroll();
     };
 
-    const element = textRef.current; // Store reference to avoid null checks
+    const element = textRef.current;
     element.addEventListener("transitionend", handleAnimationEnd);
 
     animateScroll();
 
     return () => {
-      // Check if element still exists before removing listener
       if (element) {
         element.removeEventListener("transitionend", handleAnimationEnd);
       }
     };
-  }, []); // Add dependency array
+  }, []);
 
   return (
     <div

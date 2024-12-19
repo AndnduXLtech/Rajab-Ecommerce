@@ -10,56 +10,32 @@ import { PriceRangeSlider } from "./Price.range.slider";
 import { fetchProducts } from "@/hooks/Product/Product.querry";
 import LoaderSnippet from "@/components/LoaderSnippet";
 import { useNavigate } from "react-router-dom";
+import { useWishlistMutation } from "@/page/utils/wishlist.mutation";
+import { wishlistlisting } from "@/store/slice/cartslice/cart.fetcher";
 
 const ProductListing = () => {
   const [priceRange, setPriceRange] = useState([90, 13800]);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const navigate = useNavigate();
   const { data, isLoading } = fetchProducts("", {});
+  const { mutate: toggleWishlist } = useWishlistMutation();
 
-  if (isLoading) {
+  // Use the custom hook
+  const { data: wishlistData, loading: wishlistLoading } = wishlistlisting();
+
+  const handleWishlistToggle = (productId) => {
+    toggleWishlist(productId);
+  };
+
+  if (isLoading || wishlistLoading) {
     return <LoaderSnippet />;
   }
-  console.log("products", data.products);
-  const products = [
-    {
-      id: 1,
-      name: "RAK VALET BATH TUB 170X75CM CAPPUCCINO (RAK SOLID MATERIAL)",
-      category: "BATHROOM SUITS",
-      brand: "RAK VALET BATH TUB",
-      price: 404.0,
-      discount: 16,
-      image: "/api/placeholder/400/300",
-    },
-    {
-      id: 2,
-      name: "RAK VALET BATH TUB 170X75CM CAPPUCCINO (RAK SOLID MATERIAL)",
-      category: "BATHROOM SUITS",
-      brand: "RAK VALET BATH TUB",
-      price: 404.0,
-      discount: 16,
-      image: "/api/placeholder/400/300",
-    },
-    {
-      id: 3,
-      name: "RAK VALET BATH TUB 170X75CM CAPPUCCINO (RAK SOLID MATERIAL)",
-      category: "BATHROOM SUITS",
-      brand: "RAK VALET BATH TUB",
-      price: 404.0,
-      discount: 16,
-      image: "/api/placeholder/400/300",
-    },
-    {
-      id: 4,
-      name: "RAK VALET BATH TUB 170X75CM CAPPUCCINO (RAK SOLID MATERIAL)",
-      category: "BATHROOM SUITS",
-      brand: "RAK VALET BATH TUB",
-      price: 404.0,
-      discount: 16,
-      image: "/api/placeholder/400/300",
-    },
-  ];
 
+  console.log(wishlistData);
+
+  const wishlistProductIds = new Set(
+    wishlistData?.wishlist?.products?.map((item) => item.product._id)
+  );
   const brands = [
     "RAK",
     "Espa",
@@ -228,8 +204,20 @@ const ProductListing = () => {
                       variant="ghost"
                       size="icon"
                       className="absolute top-2 right-2 bg-white/80 hover:bg-white"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Ensure this is the first line
+                        console.log(
+                          "Wishlist button clicked, event propagation stopped."
+                        );
+                        handleWishlistToggle(product._id);
+                      }}
                     >
-                      <Heart className="w-5 h-5" />
+                      <Heart
+                        className="w-5 h-5"
+                        color={
+                          wishlistProductIds.has(product._id) ? "red" : "gray"
+                        }
+                      />
                     </Button>
                     {product.discount && (
                       <div className="absolute bottom-2 right-2 bg-yellow-400 px-2 py-1 rounded text-sm">

@@ -1,22 +1,21 @@
 import React from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Trash2, ShoppingCart } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Heart } from "lucide-react";
 import { api } from "../utils/fetcher";
+import { wishlistlisting } from "@/store/slice/cartslice/cart.fetcher";
+import { useWishlistMutation } from "../utils/wishlist.mutation";
 
 export default function Wishlist() {
+  const { data: wishlistData, loading } = wishlistlisting();
+  if (loading) return <>loading....</>;
+
+  const wishlistItems = wishlistData?.wishlist?.products || [];
+
   const queryClient = useQueryClient();
-
-  const { data: wishlistItems = [] } = useQuery({
-    queryKey: ["wishlist"],
-    queryFn: () => api.get("/api/wishlist").then((res) => res.data),
-  });
-
-  const removeFromWishlist = useMutation({
-    mutationFn: (itemId) => api.delete(`/api/wishlist/${itemId}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["wishlist"]);
-    },
-  });
+  const { mutate: toggleWishlist } = useWishlistMutation();
+  const handleWishlistToggle = (productId) => {
+    toggleWishlist(productId);
+  };
 
   const moveToCart = useMutation({
     mutationFn: (itemId) => api.post(`/api/cart/add/${itemId}`),
@@ -26,36 +25,55 @@ export default function Wishlist() {
   });
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold">My Wishlist</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-6 my-11">
+      <h2 className="text-2xl font-bold ms-5 ">My Wishlist</h2>
+      <div className="px-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-items-center">
         {wishlistItems.map((item) => (
           <div
-            key={item.id}
-            className="bg-white shadow rounded-lg overflow-hidden"
+            key={item.product._id}
+            className="max-w-sm rounded-lg overflow-hidden shadow-lg bg-white"
           >
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-full h-48 object-cover"
-            />
+            {/* Product Image */}
+            <div className="relative">
+              <img
+                src={item.product.images[0]?.url} // Access the first image
+                alt={item.product.images[0]?.altText || item.product.name} // Use altText if available
+                className="w-full h-64 object-cover"
+              />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Ensure this is the first line
+                  console.log(
+                    "Wishlist button clicked, event propagation stopped."
+                  );
+                  handleWishlistToggle(item?.product?._id);
+                }}
+                className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white"
+              >
+                <Heart className="w-5 h-5 text-red-500" />
+              </button>
+            </div>
+
+            {/* Product Info */}
             <div className="p-4">
-              <h3 className="text-lg font-medium text-gray-900">{item.name}</h3>
-              <p className="mt-1 text-gray-500">${item.price.toFixed(2)}</p>
-              <div className="mt-4 flex space-x-3">
-                <button
-                  onClick={() => moveToCart.mutate(item.id)}
-                  className="flex-1 flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-                >
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  Add to Cart
-                </button>
-                <button
-                  onClick={() => removeFromWishlist.mutate(item.id)}
-                  className="p-2 text-gray-400 hover:text-red-500"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
+              <h2 className="text-lg font-bold mb-2">{item.product.name}</h2>
+              <p className="text-gray-600 text-sm mb-2">
+                {item.product.description}
+              </p>
+              <p className="text-gray-500 mb-2">{item.product.category}</p>
+
+              {/* Price Section */}
+              <div className="flex items-center justify-between mt-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl font-bold">
+                    AED {item.product.price.toFixed(2)}
+                  </span>
+                  {item.product.discount && (
+                    <span className="bg-yellow-300 text-sm px-2 py-1 rounded">
+                      -{item.product.discount}%
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>

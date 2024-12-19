@@ -10,6 +10,7 @@ import { BsChatRightHeart, BsHeart } from "react-icons/bs";
 import { useMutation } from "@tanstack/react-query";
 import { mutationHelper } from "@/hooks/base";
 import { toast } from "sonner";
+import { wishlistMutation } from "../utils/wishlist.mutation";
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -21,11 +22,7 @@ const ProductPage = () => {
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants?.[0] || null
   );
-
-  if (loading) {
-    return <ProductPageSkeleton />;
-  }
-
+  const { mutate: toggleWishlist } = wishlistMutation();
   if (!product) {
     return <div>Product not found</div>;
   }
@@ -50,14 +47,16 @@ const ProductPage = () => {
     );
   };
 
-  const handleAddToWishlist = () => {
-    console.log("Added to wishlist:", product);
+  const handleWishlistToggle = (productId) => {
+    toggleWishlist(productId);
   };
 
   // Calculate discounted price
   const originalPrice = product.price;
   const discountedPrice = originalPrice * (1 - product.discount / 100);
-
+  if (loading) {
+    return <ProductPageSkeleton />;
+  }
   return (
     <div className="container mx-auto px-4 py-8">
       <Card className="grid md:grid-cols-2 gap-8">
@@ -198,8 +197,8 @@ const ProductPage = () => {
                 <Heart
                   className="h-5 w-5"
                   style={{
-                    fill: "yellow",
-                    stroke: "green",
+                    fill: "#F2BE19",
+                    stroke: "#004734",
                     strokeWidth: "2px",
                   }}
                 />

@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import ProductVariant from "../Models/product.varient.model.js";
 
 export class userActivitiesController {
-  static addToWishlist = asyncHandler(async (req, res) => {
+  static toggleWishlist = asyncHandler(async (req, res) => {
     const { productId } = req.body;
 
     const product = await Product.findById(productId);
@@ -24,33 +24,40 @@ export class userActivitiesController {
     });
 
     if (existingWishlist) {
-      return res.status(400).json({
-        success: false,
-        message: "Product is already in your wishlist",
+      // Remove product from wishlist
+      await Wishlist.updateOne(
+        { user: req.user._id },
+        { $pull: { products: { product: productId } } }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Product removed from wishlist",
+      });
+    } else {
+      // Add product to wishlist
+      const productObject = {
+        product: productId,
+        addedAt: new Date(),
+      };
+
+      let wishlist = await Wishlist.findOneAndUpdate(
+        { user: req.user._id },
+        { $addToSet: { products: productObject } },
+        { new: true, upsert: true }
+      );
+
+      wishlist = await wishlist.populate({
+        path: "products.product",
+        select: "name price images description",
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: "Product added to wishlist",
+        wishlist,
       });
     }
-
-    const productObject = {
-      product: productId,
-      addedAt: new Date(),
-    };
-
-    let wishlist = await Wishlist.findOneAndUpdate(
-      { user: req.user._id },
-      { $addToSet: { products: productObject } },
-      { new: true, upsert: true }
-    );
-
-    wishlist = await wishlist.populate({
-      path: "products.product",
-      select: "name price images description",
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Product added to wishlist successfully",
-      wishlist,
-    });
   });
 
   static getUserWishlist = asyncHandler(async (req, res) => {
@@ -253,11 +260,11 @@ export class userActivitiesController {
   });
 
   static removeFromCart = asyncHandler(async (req, res) => {
-    const { productId } = req.params;
+    const { productId, variantId } = req.params;
 
     const cart = await Cart.findOneAndUpdate(
       { user: req.user._id },
-      { $pull: { products: { product: productId } } },
+      { $pull: { products: { product: productId, variant: variantId } } },
       { new: true }
     );
 

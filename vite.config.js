@@ -11,9 +11,8 @@ export default defineConfig({
   },
   plugins: [react()],
   build: {
-    // Customize build options if needed
-    outDir: "dist", // Default output directory
-    sourcemap: true, // Enable source maps for easier debugging
+    outDir: "dist",
+    sourcemap: true,
   },
   resolve: {
     alias: {

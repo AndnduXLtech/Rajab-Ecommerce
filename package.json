@@ -3,11 +3,12 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "nodemon src/server/main.js -w src/server",
-    "start": "cross-env NODE_ENV=production node src/server/main.js",
-    "build": "vite build"
-  },
+ "scripts": {
+  "dev": "nodemon src/server/main.js -w src/server",
+  "start": "cross-env NODE_ENV=production node src/server/main.js",
+  "build": "vite build",
+  "production": "npm run build && npm run start"
+},
   "dependencies": {
     "@fontsource/space-grotesk": "^5.1.0",
     "@radix-ui/react-accordion": "^1.2.1",

@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const ProductPageSkeleton = () => {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 h-1/2">
       <Card className="grid md:grid-cols-2 gap-8 animate-pulse">
         {/* Image Gallery Skeleton */}
         <CardContent className="space-y-4">

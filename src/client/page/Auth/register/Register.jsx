@@ -11,7 +11,6 @@ const RegistrationForm = () => {
   const api = useApi();
   const navigate = useNavigate();
 
-
   const registrationMutation = useMutation({
     mutationFn: async (formData) => {
       if (!formData.username || !formData.email || !formData.password) {
@@ -46,13 +45,11 @@ const RegistrationForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-
     const formData = {
       username: e.target.username.value,
       email: e.target.email.value,
       password: e.target.password.value,
     };
-
 
     registrationMutation.mutate(formData);
   };
@@ -136,7 +133,7 @@ const RegistrationForm = () => {
             necessary to make the purchase process faster and easier.
           </p>
           <Button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/auth/login")}
             className="bg-yellow-500 hover:bg-yellow-600 text-black py-2 px-8 rounded-md"
           >
             Login

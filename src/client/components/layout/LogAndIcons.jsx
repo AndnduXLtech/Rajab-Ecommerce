@@ -6,21 +6,11 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/Auth-provider";
 import { CircleUser } from "lucide-react";
 import { useCurrentUser } from "@/store/slice/profileslice/profilefetcher";
-import { useSelector } from "react-redux";
-import {
-  selectCurrentUser,
-  selectUserLoading,
-} from "@/store/slice/profileslice/profileselector";
 
 function LogAndIcons() {
   const { myRole } = useAuth();
-  //useCurrentUser(); // Just call the hook without destructuring
-
-  //useCurrentUser(); // Add this if not already present
-  const currentUser = useSelector(selectCurrentUser);
-
-  console.log("currentUser from Redux:", currentUser);
-
+  const { data: user, loading } = useCurrentUser();
+  console.log(user?.wishlistLength);
   return (
     <div className="flex items-center space-x-4">
       <div className="hidden sm:block text-amber-400 text-xs sm:text-sm font-medium tracking-wide whitespace-nowrap">
@@ -41,8 +31,8 @@ function LogAndIcons() {
       </div>
       <div className="flex gap-2 sm:gap-4">
         <div className="relative group">
-          <div className="size-3 rounded-full bg-[#eaeaea] text-[10px] sm:text-xs flex text-green-700 justify-center items-center absolute left-3 sm:left-4 bottom-3 sm:bottom-4">
-            0
+          <div className="size-3 rounded-full font-bold bg-[#eaeaea] text-[10px] sm:text-xs flex text-green-700 justify-center items-center absolute left-3 sm:left-4 bottom-3 sm:bottom-4">
+            {user?.wishlistLength}
           </div>
           <Link to={"wishlist"}>
             <TiHeartOutline
